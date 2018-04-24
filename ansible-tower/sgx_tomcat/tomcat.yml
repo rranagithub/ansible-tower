@@ -1,0 +1,6 @@
+- name: installing tomcat on managed node
+  hosts: all  #10.10.10.229
+  sudo: true
+  sudo_user: root
+  roles:
+    - tomcat

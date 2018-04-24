@@ -1,0 +1,11 @@
+sonar_path: /opt/sonarqube/conf/sonar.properties
+
+sonar_entries:
+  - sonar.jdbc.username=sonarqube
+  - sonar.jdbc.password=qazxsw@123
+  - sonar.jdbc.url=jdbc:mysql://localhost:3306/sonarqube?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance
+
+wrapper_path: /opt/sonarqube/conf/wrapper.conf
+wrapper_entries:
+  - JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
+  - wrapper.java.commad=%JAVA_HOME%/bin/java

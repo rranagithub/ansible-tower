@@ -1,0 +1,56 @@
+
+- name: copying maven setup to managed node
+  get_url:
+    url: https://s3-ap-southeast-2.amazonaws.com/abhijeetsgx/apache-maven-3.5.2-bin.tar
+    dest: /opt/
+    mode: 0777
+- name: Extract archive
+  command: chdir=/usr/share /bin/tar xvf /opt/apache-maven-3.5.2-bin.tar -C /opt/ creates=/opt/apache-maven-3.5.2
+  mode: 0777
+
+- name: Creating entries for M2_HOME and PATH in profile file
+  lineinfile:
+    dest: "{{ profile_path }}"
+    line: "{{ item }}"
+#    state: present
+  with_items:
+    - "{{ env_var_entries }}"
+  become: true
+  tags: adding_env_entries
+
+- name: Creating entries for M2_HOME and PATH in profile file
+  lineinfile:
+    dest: "{{ profile_path }}"
+    line: "{{ item }}"
+#    state: present
+  with_items:
+    - "{{ env_var_entries1 }}"
+  become: true
+  tags: adding_env_entries1
+
+- name: refreshing source file
+  shell: source /etc/profile
+
+- name: Creating entries bashrc file
+  lineinfile:
+    path: "~/.bashrc"
+    line: "{{ item }}"
+#    state: present
+  with_items:
+    - "{{ env_var_entries }}"
+  become: true
+  tags: adding_env_entries
+
+- name: Creating entries in bashrc file
+  lineinfile:
+    path: "~/.bashrc"
+    line: "{{ item }}"
+#    state: present
+  with_items:
+    - "{{ env_var_entries1 }}"
+  become: true
+  tags: adding_env_entries1
+
+- name: refreshing source file
+  shell:  source ~/.bashrc
+

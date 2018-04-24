@@ -1,0 +1,7 @@
+- name: Installing package on target server jre
+
+  yum:
+    name: git
+    state: present
+  become: true
+  tags: installing_package

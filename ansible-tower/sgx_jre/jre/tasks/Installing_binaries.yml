@@ -1,0 +1,17 @@
+
+- name: Installing package on target server jre
+
+  yum:
+    name: "{{ package }}"
+    state: present
+  become: true
+  tags: installing_package
+
+- name: Installing package on target server jre
+
+  yum:
+    name: "{{ package2 }}"
+    state: present
+  become: true
+  tags: installing_package2
+

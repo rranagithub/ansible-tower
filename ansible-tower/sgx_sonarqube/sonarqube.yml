@@ -1,0 +1,7 @@
+---
+- name: Installing SonarQubr
+  hosts: all
+  become: true
+  remote_user: ansible
+  roles:
+  - sonarqube

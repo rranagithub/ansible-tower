@@ -1,0 +1,63 @@
+- name: copying maven setup to managed node
+  get_url:
+    url: https://s3-ap-southeast-2.amazonaws.com/abhijeetsgx/sonarqube-6.0.zip
+    dest: /opt
+    mode: 0644
+
+- name: Installing package on target server jre
+  yum:
+    name: unzip 
+    state: present
+
+- name: Unzip sonarqube
+  unarchive:
+    src: /opt/sonarqube-6.0.zip
+    dest: /opt/
+    owner: ansible
+    mode: 0777
+    remote_src: yes 
+
+
+- name: Rename sonarqube-6.0 to sonarqube
+  command: mv /opt/sonarqube-6.0 /opt/sonarqube
+
+- name: Create a new database with name 'sonarqube'
+  mysql_db:
+    name: sonarqube
+    state: present
+
+- name: creatr a sonar user
+  mysql_user:
+    name: sonarqube
+    password: qazxsw@123
+    priv: '*.*:ALL,GRANT'
+    state: present
+
+- name: Touch .my.cnf
+  command: touch /root/.my.cnf
+  become: true
+
+- name: Creating entries in sonar.properties file
+  lineinfile:
+    path: "{{ sonar_path }}"
+    line: "{{ item }}"
+    state: present
+
+  with_items:
+    - "{{ sonar_entries }}"
+  become: true
+  tags: adding_env_entries
+
+- name: Creating entries in wrapper.conf file
+  lineinfile:
+    path: "{{ wrapper_path }}"
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ wrapper_entries }}"
+  become: true
+  tags: adding_env_entries
+
+- name: execute the script
+  shell: /opt/sonarqube/bin/linux-x86-64/sonar.sh start
+

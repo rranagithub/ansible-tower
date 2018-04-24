@@ -1,0 +1,56 @@
+---
+
+- name: add group "tomcat"
+  group: name=tomcat
+
+- name: add user "tomcat"
+  user: name=tomcat group=tomcat home=/usr/share/tomcat createhome=no
+  become: true
+  become_method: sudo
+
+- name: Add to sudoers file
+  shell: echo " tomcat        ALL=(ALL)       NOPASSWD:ALL " >> /etc/sudoers
+  become: true
+ 
+- name: copying maven setup to managed node
+  get_url:
+    url: https://s3-ap-southeast-2.amazonaws.com/abhijeetsgx/apache-tomcat-7.0.61.tar.gz
+    dest: /opt
+    mode: 0777
+
+- name: Extract archive
+  command: chdir=/usr/share /bin/tar xvf /opt/apache-tomcat-7.0.61.tar.gz -C /opt/ creates=/opt/apache-tomcat-7.0.61
+  mode: 0777
+- name: Symlink install directory
+  file: src=/opt/apache-tomcat-7.0.61 path=/usr/share/tomcat state=link mode=0777
+
+- name: Change ownership of Tomcat installation
+  file: path=/usr/share/tomcat/ owner=tomcat group=tomcat state=directory mode=0777 recurse=yes
+
+- name: Configure Tomcat server
+  template: src=server.xml dest=/usr/share/tomcat/conf/ mode=0777
+  notify: restart tomcat
+
+- name: Configure Tomcat users
+  template: src=tomcat-users.xml dest=/usr/share/tomcat/conf/ mode=0777
+  notify: restart tomcat
+
+- name: Install Tomcat init script
+  copy: src=tomcat-initscript.sh dest=/etc/init.d/tomcat mode=0755
+
+- name: catalina run 
+  command: /opt/apache-tomcat-7.0.61/bin/catalina.sh run
+  async: 25920000000000               # 60*60*24*30 – 1 month
+  poll: 0
+
+- name: catalina start
+  command: /opt/apache-tomcat-7.0.61/bin/catalina.sh start
+  async: 25920000000000               # 60*60*24*30 – 1 month
+  poll: 0
+
+- name: Start Tomcat
+  service: name=tomcat state=started enabled=yes
+
+- file:
+    path: /opt/apache-tomcat-7.0.61.tar.gz
+    state: absent

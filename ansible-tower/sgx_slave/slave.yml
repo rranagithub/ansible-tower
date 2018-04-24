@@ -1,0 +1,7 @@
+---
+- name: Installing Slave
+  hosts: all
+  sudo: true
+  sudo_user: root
+  roles:
+  - slave

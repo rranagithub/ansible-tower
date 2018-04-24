@@ -1,0 +1,13 @@
+---
+# tasks file for JRE
+# Creating the installation directory
+#- include: Installation_dir.yml
+#  tags: install_dir
+
+# Installing the JRE package
+- include: Installing_binaries.yml
+  tags: installing_package
+
+# Exporting the paths of enviroment variables for post installation
+- include: Update_profile.yml
+  tags: export_paths

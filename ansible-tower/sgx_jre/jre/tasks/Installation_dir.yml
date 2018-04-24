@@ -1,0 +1,12 @@
+# Creating the directory for installing the package
+- name: Creating installation directory for package
+  file:
+    path: "{{ java_home }}"
+    state: directory
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0755
+    recurse: yes
+  become: true
+  tags: install_dir
+

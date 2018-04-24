@@ -1,0 +1,26 @@
+---
+## vars file for jdk
+owner: ansible
+group: root
+
+# Path for java home
+java_home: ''
+
+# Java path
+java_path: '/usr/lib/jvm/jre-1.8.0-openjdk/bin/'
+
+# Entries in profile file
+profile_path: '/etc/profile'
+package: 'java-1.8.0-openjdk-1.8.0.161-0.b14.el7_4.x86_64'
+package2: 'java-1.8.0-openjdk-devel.x86_64 '
+absent_items:
+  - JAVA_HOME
+  - java
+env_var_entries:  
+  - export JAVA_HOME='/usr/lib/jvm/jre-1.8.0-openjdk'
+  - export PATH=$JAVA_HOME/bin:$PATH
+
+# Creating softlink for java alternatives
+link_src: '/opt/java/usr/lib/jvm'
+string_check: 'java-1.8.0-openjdk-1.8.0.*'
+link_dest: '/etc/alternatives/java'

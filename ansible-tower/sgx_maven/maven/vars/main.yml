@@ -1,0 +1,17 @@
+profile_path: '/etc/profile'
+
+env_var_java:
+  - JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk"
+
+#package: 'java-1.8.0-openjdk-1.8.0.161-0.b14.el7_4.x86_64'
+#package2: 'java-1.8.0-openjdk-devel.x86_64 '
+#absent_items:
+#  - JAVA_HOME
+#  - java
+env_var_entries:
+  - export M2_HOME=/opt/apache-maven-3.5.2
+  - export M2=/opt/apache-maven-3.5.2/bin
+  - export PATH=${M2_HOME}/bin:${PATH}
+env_var_entries1:
+  - export MAVEN_HOME=/opt/apache-maven-3.5.2/bin
+  - export PATH=${MAVEN_HOME}/bin:${PATH}

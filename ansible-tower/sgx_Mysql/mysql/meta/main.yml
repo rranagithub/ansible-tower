@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  author: Abhijeet Thakur (abhijeet.t@hcl.com)
+  description: JRE
+  company: HCL
+  license: license (BSD)
+  platforms:
+   - name: RHEL
+     versions:
+      - 7
+dependencies: []

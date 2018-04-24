@@ -1,0 +1,66 @@
+
+    - copy:
+        src: mysql-community-release-el7-5.noarch.rpm 
+        dest: /opt/mysql-community-release-el7-5.noarch.rpm
+        mode: 0644
+
+    - name: Installing repos on target server
+      shell: rpm -ivh /opt/mysql-community-release-el7-5.noarch.rpm
+      ignore_errors: True
+
+    - name: Install MySQL packages
+      sudo: yes
+      yum: name={{ item }} state=present
+      with_items:
+#        - mysql
+        - mysql-server
+        - MySQL-python
+
+    - name: Start the MySQL service
+      action: service name=mysqld state=started
+
+    - name: Copy the my.cnf
+      copy: src=/var/lib/awx/projects/_8__sgx_mysql/sgx_Mysql/mysql/files/my.cnf dest=/root/.my.cnf owner=root mode=0666
+    
+    - mysql_user:
+        name: ansible
+        password: qazxsw@123
+        priv: '*.*:ALL,GRANT'
+        state: present
+
+
+    - name: removing package
+      command: rm -rf /opt/mysql-community-release-el7-5.noarch.rpm
+
+    - copy: src=/var/lib/awx/projects/_8__sgx_mysql/sgx_Mysql/mysql/files/jpetstore-mysql-dataload.sql dest=/home/ansible/ owner=root mode=0777
+    - copy: src=/var/lib/awx/projects/_8__sgx_mysql/sgx_Mysql/mysql/files/jpetstore-mysql-schema.sql dest=/home/ansible/ owner=root mode=0777
+
+    - name: copying schema
+      shell: mysql -h "{{rds}}" -u jenkins -pjenkins#12345 jpetstore < /home/ansible/jpetstore-mysql-schema.sql
+      ignore_errors: True
+
+    - name: copying dataload
+      shell: mysql -h "{{rds}}" -u jenkins -pjenkins#12345 jpetstore < /home/ansible/jpetstore-mysql-dataload.sql
+      ignore_errors: True
+
+
+    - name: removing dataload
+      shell: rm -rf /home/ansible/jpetstore-mysql-dataload.sql
+
+    - name: removing schema
+      shell: rm -rf /home/ansible/jpetstore-mysql-schema.sql
+
+#    - mysql_db:
+#        login_host: "{{rds}}"
+#        login_user: jenkins
+#        login_password: jenkins#12345
+#        state: import
+#        name: jpetstore
+#        target: /home/ansible/jpetstore-mysql-dataload.sql
+#    - mysql_db:
+#        login_host: "{{rds}}"
+#        login_user: jenkins
+#        login_password: jenkins#12345
+#        state: import
+#        name: jpetstore
+#        target: /home/ansible/jpetstore-mysql-schema.sql

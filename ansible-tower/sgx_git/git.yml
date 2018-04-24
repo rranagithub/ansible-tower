@@ -1,0 +1,7 @@
+---
+- name: Installing open git through yum
+  hosts: all    #10.10.10.229
+  sudo: true
+  sudo_user: root
+  roles:
+  - git

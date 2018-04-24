@@ -1,0 +1,38 @@
+# Cleaning up previous entries from profile file
+- name: Deleting the previous entry from profile
+  lineinfile:
+    path: "{{ profile_path }}"
+    regexp: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ absent_items }}"
+  become: true
+  tags: remove_env_entries
+
+# Setting environment variable JAVA_HOME for all users
+- name: Creating entries for JAVA_HOME and PATH in profile file
+  lineinfile:
+    path: "{{ profile_path }}"
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ env_var_entries }}"
+  become: true
+  tags: adding_env_entries
+
+- name: refreshing source file
+  shell:  source /etc/profile
+
+# Setting environment variable JAVA_HOME for all users
+- name: Creating entries for JAVA_HOME and PATH in bashrc file
+  lineinfile:
+    path: "~/.bashrc"
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ env_var_entries }}"
+  become: true
+  tags: adding_env_entries
+
+- name: refreshing source file 
+  shell:  source ~/.bashrc

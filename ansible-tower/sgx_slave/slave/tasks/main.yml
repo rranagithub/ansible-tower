@@ -1,0 +1,11 @@
+- name: Download agent
+  copy: 
+    src: agent.jar
+    dest: /home/ansible/agent.jar
+    mode: 0777
+  become: true
+- name: Install slave
+  command: /usr/bin/java -jar agent.jar -jnlpUrl http://54.199.148.179:8080/computer/slave-agent-test3/slave-agent.jnlp -secret "{{ key }}" -workDir "/home/ansible/"
+  async: 25920000000000               # 60*60*24*30 – 1 month
+  poll: 0
+  become: true
